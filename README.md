@@ -10,7 +10,7 @@ Celem  pierwszego  projektu  zespołowego,  który  realizują  Państwo  w  ram
  - Zwrócenie książki
  - Wyszukiwanie książek po tytule, roku wydania lub autorach
  - Rola  administracyjna  (proszę  uwzględnić,  że  w  systemie  powinien  istnieć przynajmniej jeden administrator):
- -- Dodawanie nowych użytkowników (login oraz przynajmniej generowanie hasła)
- -- Usuwanie użytkowników
- -- Wyszukiwanie użytkowników po ich nazwie
+     - Dodawanie nowych użytkowników (login oraz przynajmniej generowanie hasła)
+     - Usuwanie użytkowników
+     - Wyszukiwanie użytkowników po ich nazwie
 - Ponadto, proszę w odpowiedni sposób zabezpieczyć API na ocenę dobrą wystarczy zastosowanie mechanizmu sesjioraz tradycyjnego loginu i hasła, natomiast w przypadku oceny bardzo dobrej, login z użyciem konta Google jak również zastosowanie mechanizmu JSON Web Token.
