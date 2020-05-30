@@ -1,7 +1,7 @@
 # ProgramowanieHybrydoweProjekt1
 
-## Programowanie Hybrydowe –Projekt numer 1
-### Celprojektu:
+## Programowanie Hybrydowe – Projekt numer 1
+### Cel projektu:
 Celem  pierwszego  projektu  zespołowego,  który  realizują  Państwo  w  ramach  przedmiotu Programowanie  Hybrydowe  jest  opracowanie  API biblioteki z  wykorzystaniem  technologii  Spring  Boot,  a następnie wdrożenie w ramach platformy chmurowej (np.Microsoft Azure) i wykazanie, że dana implementacja działa w sposób oczekiwany poprzez połączenie z poziomu innej aplikacji.Funkcjonalności, które powinni Państwo zaimplementować są następujące:
  - Wyświetlenie wszystkich książek znajdujących się w bibliotece (model książki powinien składać się przynajmniej z trzech pól: autorów, tytułu oraz roku wydania)
  - Dodanienowej książki
