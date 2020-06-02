@@ -2,7 +2,6 @@
     <div class="outerWrapper" align="center">
         <v-card class="innerWrapper" shaped >
             <div class="mediaPlayer pa-4">
-                <youtube :video-id="videoId"></youtube>
             </div>
                 <div class="description">
                     <v-form v-model="valid">
@@ -11,11 +10,11 @@
                             <v-col cols="12">
                             <v-text-field
                                     required
-                                    v-model="songTitle"
-                                    :rules="songTitleRules"
+                                    v-model="bookTitle"
+                                    :rules="bookTitleRules"
                                     hide-details="auto"
-                                    label="Song title:"
-                                    prepend-icon="mdi-music-note-eighth"
+                                    label="Book title:"
+                                    prepend-icon="mdi-book"
                                     outlined
                                     rounded
                                     clearable
@@ -28,14 +27,14 @@
 
                             <v-combobox
                                     required
-                                    v-model="newArtists"
-                                    :rules="artistsRules"
-                                    :items="dbArtists"
-                                    :item-text="artistDescription"
+                                    v-model="newAuthors"
+                                    :rules="authorsRules"
+                                    :items="dbAuthors"
+                                    :item-text="authorDescription"
                                     :search-input.sync="search"
-                                    label="Artists:"
+                                    label="Authors:"
                                     deletable-chips
-                                    prepend-icon="mdi-artist"
+                                    prepend-icon="mdi-account-edit"
                                     multiple
                                     rounded
                                     clearable
@@ -54,7 +53,7 @@
                                     </v-list-item>
                                 </template>
                             </v-combobox>
-                                <div class="artistSearch"></div>
+                                <div class="authorSearch"></div>
                             </v-col>
                             </v-row>
                     </v-container>
@@ -63,13 +62,13 @@
             <v-card-actions>
                 <v-container>
                 <v-row>
-                    <v-alert v-if="songError" type="error">Could not upload this song, check if it's not already in your playlist.</v-alert>
-                    <v-alert v-if="artistError" type="error">Something went wrong. Could not add artist.</v-alert>
-                    <v-alert v-if="artistSongError" type="error">Something went wrong, we couldn't add this song to your playlist</v-alert>
+                    <v-alert v-if="bookError" type="error">Could not upload this book, check if it's not already in a library.</v-alert>
+                    <v-alert v-if="authorError" type="error">Something went wrong. Could not add author.</v-alert>
+                    <v-alert v-if="artistSongError" type="error">Something went wrong, we couldn't add this book to your playlist</v-alert>
                 </v-row>
                 <v-row justify="space-around">
                         <v-btn rounded @click="$emit('closeModal')"><v-icon >mdi-close</v-icon>Close</v-btn>
-                        <v-btn rounded :disabled="!valid" @click.prevent="addToDb"><v-icon>mdi-music-note-plus</v-icon> Add song to your playlist</v-btn>
+                        <v-btn rounded :disabled="!valid" @click.prevent="addToDb"><v-icon>mdi-music-note-plus</v-icon> Add book to your playlist</v-btn>
                 </v-row>
                 <v-spacer></v-spacer>
                 </v-container>
@@ -80,7 +79,7 @@
 
 <script>
     import axios from 'axios';
-    const serverUrl = 'http://localhost:3000';
+    const serverUrl = 'http://localhost:7777';
 
     export default {
         name: "Modal",
@@ -94,37 +93,37 @@
             },
         data(){
             return{
-                songError: false,
+                bookError: false,
                 artistSongError: false,
-                artistError: false,
+                authorError: false,
                 artistId: null,
                 valid: false,
-                songTitle: null,
+                bookTitle: null,
                 channelTitle: null,
                 published: null,
                 thumbnails: null,
                 videoId: null,
-                dbArtists: [],
-                newArtists: [],
+                dbAuthors: [],
+                newAuthors: [],
                 newSong: null,
                 search: null,
-                songTitleRules: [
+                bookTitleRules: [
                     value => !!value || 'Required.',
                     value => (value && value.length >= 3) || 'Min 3 characters',
                 ],
-                artistsRules: [
+                authorsRules: [
                     value => value.length>0 || 'Required.',
                 ]
             };
         },
         methods:{
-            artistDescription: item => item.artistName,
+            authorDescription: item => item.artistName,
             async addToDb() {
                 // //Add song to db
                 try{
                     await axios.post(serverUrl+'/songs', {
                         id: this.videoId,
-                        songTitle: this.songTitle,
+                        songTitle: this.bookTitle,
                         publishedDate: this.published,
                         joiningDate: new Date(),
                         thumbnails: this.thumbnails,
@@ -134,10 +133,10 @@
                 catch(e){
                     // eslint-disable-next-line no-console
                     console.log('Song error', e);
-                    this.songError=true;
+                    this.bookError=true;
                     return;
                 }
-                for(let artist of this.newArtists)
+                for(let artist of this.newAuthors)
                 {
                     if(artist.artistName != undefined)
                     {
@@ -155,10 +154,10 @@
                             return;
                         }
                     }
-                    else if(this.dbArtists.map(s => s.artistName).includes(artist))
+                    else if(this.dbAuthors.map(s => s.artistName).includes(artist))
                     {
                         //this name is already in DB, we need to find this artist, and add linking
-                        let searchedArtist = this.dbArtists.find((item) => {return item.artistName === artist});
+                        let searchedArtist = this.dbAuthors.find((item) => {return item.artistName === artist});
                         //linking artists with songs
                         try{
                             await axios.post(serverUrl+'/songArtists', {
@@ -185,7 +184,7 @@
                         catch (e) {
                             // eslint-disable-next-line no-console
                             console.log('Artist error', e);
-                            this.artistError=true;
+                            this.authorError=true;
                             return;
                         }
                         try{
@@ -208,17 +207,17 @@
         },
         mounted(){
             // let $this = this;
-            this.songTitle = this.item.snippet.title;
+            this.bookTitle = this.item.snippet.title;
             this.channelTitle = this.item.snippet.channelTitle;
             this.published = this.item.snippet.publishedAt;
             this.thumbnails = this.item.snippet.thumbnails;
             this.videoId = this.item.id.videoId;
-            this.newArtists.push(this.channelTitle);
+            this.newAuthors.push(this.channelTitle);
             // let $this = this;
             axios.get(serverUrl+'/artists').then(
                 artists => {
                     let value = artists.data;
-                    this.dbArtists = value
+                    this.dbAuthors = value
                 });
         },
     }
@@ -259,7 +258,7 @@
         float:left;
         position: relative;
     }
-    .artistSearch{
+    .authorSearch{
         padding:10px;
     }
 </style>

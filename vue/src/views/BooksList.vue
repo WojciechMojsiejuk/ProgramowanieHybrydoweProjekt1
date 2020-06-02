@@ -311,11 +311,11 @@
             },
         mounted()
         {
-            let $this = this;
+            // let $this = this;
             // load all songs from server
-            axios.get(serverUrl+'/songs').then(songs => $this.playlist=songs.data);
-            axios.get(serverUrl+'/artists').then(artists => $this.artists=artists.data);
-            axios.get(serverUrl+'/songArtists').then(songArtists => $this.songArtists=songArtists.data)
+            // axios.get(serverUrl+'/songs').then(songs => $this.playlist=songs.data);
+            // axios.get(serverUrl+'/artists').then(artists => $this.artists=artists.data);
+            // axios.get(serverUrl+'/songArtists').then(songArtists => $this.songArtists=songArtists.data)
         },
         methods:
         {

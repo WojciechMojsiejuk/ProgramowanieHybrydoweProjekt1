@@ -16,8 +16,9 @@
     z-index: -1;
     height: 100vh;
     background-blend-mode: soft-light;
-    background: url("../assets/background.jpg") no-repeat;
+    background: url("../assets/background2.jpg") no-repeat;
     background-size: cover;
-    /*filter: grayscale(100%);*/
+    /*filter: blur(10px);*/
+    /*filter: sepia(5%);*/
 }
 </style>
