@@ -107,7 +107,7 @@
     import axios from 'axios';
     import Navigation from "@/components/Navigation";
     import Background from "@/components/Background";
-    const serverUrl = 'http://localhost:7777';
+    const serverUrl = 'https://biblioteka-api-ph-library-api.azuremicroservices.io';
 
     export default {
         name: "AddBook",

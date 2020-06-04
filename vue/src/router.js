@@ -4,6 +4,7 @@ import AddBook from './views/AddBook';
 import Authors from "./views/Authors";
 import Login from "./views/Login";
 import Logout from "./views/Logout";
+import Resources from "./views/Resources";
 import BooksList from "@/views/BooksList";
 
 Vue.use(Router);
@@ -11,6 +12,11 @@ Vue.use(Router);
 export default new Router({
     routes:
     [
+        {
+            path: '/books',
+            name: 'Resources',
+            component: Resources,
+        },
         {
             path: '/books/add',
             name: 'AddBook',

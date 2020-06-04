@@ -78,54 +78,22 @@
                     >
                         <v-list-item-content>
                             <v-list-item-title>{{author.name}} {{author.surname}}</v-list-item-title>
-<!--                            <v-list-item-subtitle v-if="threeLine">-->
-<!--                                <v-row  class="px-4">-->
-<!--                                    <ul>-->
-<!--&lt;!&ndash;                                    <li class="ml-2" v-for="song in showArtistSongs(artist)" :key="song.id">&ndash;&gt;-->
-<!--&lt;!&ndash;                                            {{song.songTitle}}&ndash;&gt;-->
-<!--&lt;!&ndash;                                        </li>&ndash;&gt;-->
-<!--                                    </ul>-->
-<!--                                </v-row>-->
-<!--                            </v-list-item-subtitle>-->
+                            <v-list-item-subtitle v-if="threeLine">
+                                <v-row  class="px-4">
+                                    <ul>
+                                    <li class="ml-2" v-for="book in showBookAuthors(author)" :key="book.id">
+                                            {{book.name}} {{book.publicationYear}}
+                                        </li>
+                                    </ul>
+                                </v-row>
+                                <v-row v-if="!showBookAuthors(author).length">
+                                    <span class="overline font-weight-light px-4" style="color: aliceblue;"> This author doesn't have any books</span>
+                                </v-row>
+                            </v-list-item-subtitle>
                         </v-list-item-content>
-<!--                        , showArtistSongs(author)-->
-                        <v-list-item-action>
-                            <v-btn icon @click.stop="showConfirm(author)" ><v-icon>mdi-close</v-icon></v-btn>
-                        </v-list-item-action>
                     </v-list-item>
                 </v-list-item-group>
             </v-list>
-            <!--                    Confirm delete dialog-->
-            <v-dialog
-                    persistent
-                    v-model="deleteDialog"
-                    max-width="45%"
-
-            >
-                <v-card>
-                    <v-card-title class="headline" >Do you want to delete this author and all their books?</v-card-title>
-                    <v-card-subtitle class="subtitle-1 font-italic font-weight-light" v-if="authorToDelete">{{authorToDelete.artistName}}</v-card-subtitle>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-
-                        <v-btn
-                                text
-                                @click="deleteDialog = false"
-                        >
-                            <v-icon>mdi-cancel</v-icon>
-                            Cancel
-                        </v-btn>
-
-                        <v-btn
-                                color="error"
-                                text
-                        ><v-icon>mdi-delete</v-icon>
-                            <!--                                @click.prevent="remove(artistsToDelete,showArtistSongs(artistsToDelete))"-->
-                            Remove
-                        </v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
 
         </div>
         <v-row class="authorsEmpty" justify="center" v-if="!authors.length">
@@ -139,7 +107,7 @@
     import Navigation from "@/components/Navigation";
     import axios from "axios";
     import orderBy from 'lodash/orderBy';
-    const serverUrl = ' http://localhost:7777';
+    const serverUrl = 'https://biblioteka-api-ph-library-api.azuremicroservices.io';
 
     export default {
         name: "Authors",
@@ -151,7 +119,7 @@
         data() {
             return {
                 authors: [],
-                booksList: [],
+                books: [],
                 authorsBooks: [],
                 threeLine: true,
                 sortShow: false,
@@ -163,10 +131,10 @@
         },
         async mounted()
         {
-            console.log(serverUrl+'/authors')
-            // load all songs from server
+            // load all authors from server
             await axios.get(serverUrl+'/authors').then(authors => this.authors=authors.data);
-            console.log(this.authors)
+            await axios.get(serverUrl+'/books').then(books => this.books=books.data);
+            await axios.get(serverUrl+'/authorBooks').then(authorsBooks => this.authorsBooks=authorsBooks.data);
         },
         methods:{
             clearSearch(){
@@ -190,29 +158,20 @@
                 this.deleteDialog=true;
                 this.authorToDelete=author;
             },
-            // showArtistSongs(artist){
-            //     let _ = this.songArtists.filter((item) => {return item.artistId === artist.id});
-            //     let _artistSongs = [];
-            //     for( let entity of _){
-            //         _artistSongs .push(this.playlist.filter(
-            //             (item) => {
-            //                 return entity.songId === item.id
-            //             }
-            //         )[0]);
-            //     }
-            //     return _artistSongs;
-            // },
-            // async remove(artist, songs) {
-            //     for(let song of songs){
-            //         let linking = this.songArtists.filter((item) => {return item.songId == song.id});
-            //         if(linking.length==1)
-            //         {
-            //             // eslint-disable-next-line no-console
-            //             await axios.delete(serverUrl+'/songs/'+song.id);
-            //         }
-            //     }
-            //     await axios.delete(serverUrl+'/artists/'+artist.id);
-            // },
+            showBookAuthors(author){
+                console.log(this.authorsBooks)
+                let _ = this.authorsBooks.filter((item) => {return item.authorId == author.id});
+                let _bookAuthors = [];
+                for( let entity of _){
+                    _bookAuthors.push(this.books.filter(
+                        (item) => {
+                            return entity.bookId == item.id
+                        }
+                    )[0]);
+                }
+                console.log(_bookAuthors)
+                return _bookAuthors;
+            },
         },
         computed: {
             Authors() {
