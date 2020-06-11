@@ -77,7 +77,7 @@
                             :key="author.id"
                     >
                         <v-list-item-content>
-                            <v-list-item-title>{{author.name}} {{author.surname}}</v-list-item-title>
+                            <v-list-item-title>{{author.name}}</v-list-item-title>
                             <v-list-item-subtitle v-if="threeLine">
                                 <v-row  class="px-4">
                                     <ul>
@@ -107,7 +107,7 @@
     import Navigation from "@/components/Navigation";
     import axios from "axios";
     import orderBy from 'lodash/orderBy';
-    const serverUrl = 'https://biblioteka-api-ph-library-api.azuremicroservices.io';
+    const serverUrl = 'https://ph-library-api-project.azurewebsites.net';
 
     export default {
         name: "Authors",
@@ -132,9 +132,11 @@
         async mounted()
         {
             // load all authors from server
-            await axios.get(serverUrl+'/authors').then(authors => this.authors=authors.data);
-            await axios.get(serverUrl+'/books').then(books => this.books=books.data);
-            await axios.get(serverUrl+'/authorBooks').then(authorsBooks => this.authorsBooks=authorsBooks.data);
+            await axios.get(serverUrl+'/authors',{ 'headers': { 'Authorization': this.$cookies.get('token')}}).then(authors => this.authors=authors.data);
+            await axios.get(serverUrl+'/books',{ 'headers': { 'Authorization': this.$cookies.get('token')}}).then(books => this.books=books.data);
+            await axios.get(serverUrl+'/authorBook',{ 'headers': { 'Authorization': this.$cookies.get('token')}}).then(authorsBooks => this.authorsBooks=authorsBooks.data);
+            console.log("Author books")
+            console.log(this.authorsBooks)
         },
         methods:{
             clearSearch(){
@@ -159,7 +161,6 @@
                 this.authorToDelete=author;
             },
             showBookAuthors(author){
-                console.log(this.authorsBooks)
                 let _ = this.authorsBooks.filter((item) => {return item.authorId == author.id});
                 let _bookAuthors = [];
                 for( let entity of _){
@@ -169,7 +170,6 @@
                         }
                     )[0]);
                 }
-                console.log(_bookAuthors)
                 return _bookAuthors;
             },
         },
@@ -181,11 +181,10 @@
                         return true
                     } else {
                         try {
-                            return item.surname.toLowerCase().match(this.search.toLowerCase()) + item.name.toLowerCase().match(this.search.toLowerCase())
+                            return item.name.toLowerCase().match(this.search.toLowerCase())
                         } catch (TypeError) {
                             return true
                         }
-
                     }
 
                 });

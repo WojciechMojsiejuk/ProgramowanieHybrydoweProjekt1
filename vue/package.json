@@ -16,6 +16,7 @@
     "lodash.orderby": "^4.6.0",
     "moment": "^2.26.0",
     "vue": "^2.6.11",
+    "vue-cookies": "^1.7.0",
     "vue-router": "^3.3.2",
     "vuetify": "^2.2.11"
   },

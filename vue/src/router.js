@@ -5,8 +5,8 @@ import Authors from "./views/Authors";
 import Login from "./views/Login";
 import Logout from "./views/Logout";
 import Resources from "./views/Resources";
+import Users from "./views/Users";
 import BooksList from "@/views/BooksList";
-
 Vue.use(Router);
 
 export default new Router({
@@ -41,6 +41,11 @@ export default new Router({
             path: '/logout',
             name: 'Logout',
             component: Logout,
+        },
+        {
+            path: '/users',
+            name: 'Users',
+            component: Users,
         },
     ]
 });

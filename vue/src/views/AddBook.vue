@@ -1,8 +1,9 @@
 <template>
     <div class="outerWrapper" align="center">
-        <navigation/>
+        <error :error="error"></error>
+        <navigation :role="role"/>
         <background/>
-        <v-card class="innerWrapper" shaped >
+        <v-card class="innerWrapper" v-if="!error" shaped >
             <div class="description">
                 <v-form v-model="valid">
                     <v-container fluid>
@@ -100,6 +101,7 @@
                 </v-container>
             </v-card-actions>
         </v-card>
+
     </div>
 </template>
 
@@ -107,7 +109,8 @@
     import axios from 'axios';
     import Navigation from "@/components/Navigation";
     import Background from "@/components/Background";
-    const serverUrl = 'https://biblioteka-api-ph-library-api.azuremicroservices.io';
+    import Error from "@/components/Error";
+    const serverUrl = 'https://ph-library-api-project.azurewebsites.net';
 
     export default {
         name: "AddBook",
@@ -115,6 +118,7 @@
             {
                 Navigation,
                 Background,
+                Error,
             },
         data(){
             return{
@@ -139,36 +143,45 @@
                 ],
                 DescriptionRules: [
                     value => value.length>0 || 'Required.',
-                ]
+                ],
+                role: '',
+                authRole: '',
+                error: null,
             };
         },
         methods: {
-            authorDescription: item => item.name + " " + item.surname,
+            authorDescription: item => item.name,
             async addToDb() {
+                //convert date to year only
                 let publicationYear = parseInt(this.published.slice(0,4))
-                console.log(publicationYear)
                 //Add book to db
                 try {
-                    await axios.post(serverUrl + '/createBook', {
+                    await axios.post(serverUrl + '/admin/createBookWithAuthors', {
                         name: this.bookTitle,
                         description: this.description,
-                        publicationYear: publicationYear
-                    });
+                        publicationYear: publicationYear,
+                        authors: this.newAuthors,
+                    },
+                        { 'headers': { 'Authorization': this.$cookies.get('token')}}
+                    );
+                    await this.$router.push('books')
                 } catch (e) {
-                    // eslint-disable-next-line no-console
-                    console.log('Book error', e);
+                    console.log(e)
                     this.bookError = true;
                     return;
                 }
+
             }
         },
         async mounted()
         {
-            await axios.get(serverUrl+'/authors').then(
+            this.role = this.$cookies.get('role')
+            await axios.get(serverUrl+'/authors',{ 'headers': { 'Authorization': this.$cookies.get('token')} }).then(
                 authors => {
                     let value = authors.data;
                     this.dbAuthors = value
-                });
+                }).catch((error)=>console.log(error));
+            this.authRole = this.role
         }
     }
 </script>
@@ -180,5 +193,8 @@
         justify-content: center;
         flex-direction: column;
         margin: 20px;
+    }
+    .unauthorized{
+        color: aliceblue;
     }
 </style>

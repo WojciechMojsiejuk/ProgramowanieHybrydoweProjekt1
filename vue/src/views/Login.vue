@@ -1,6 +1,6 @@
 <template>
     <v-app id="inspire">
-        <v-app id="inspire" v-if="!token">
+        <v-app id="inspire">
             <v-content>
                 <v-container
                         class="fill-height"
@@ -25,10 +25,15 @@
                                     <v-spacer></v-spacer>
                                 </v-toolbar>
                                 <v-card-text>
-                                    <v-form>
+                                    <v-form v-model="valid">
+                                        <v-row>
+                                            <v-alert v-if="error" type="error">Invalid login or password</v-alert>
+                                        </v-row>
                                         <v-text-field
                                                 label="Login"
                                                 name="login"
+                                                :rules="rules"
+                                                v-model="login"
                                                 prepend-icon="mdi-account"
                                                 type="text"
                                         ></v-text-field>
@@ -37,6 +42,8 @@
                                                 id="password"
                                                 label="Password"
                                                 name="password"
+                                                :rules="rules"
+                                                v-model="password"
                                                 prepend-icon="mdi-lock"
                                                 type="password"
                                         ></v-text-field>
@@ -44,7 +51,7 @@
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn color="brown lighten-2" dark @click="login">Login</v-btn>
+                                    <v-btn color="brown lighten-2" @click="LogInto" :dark="valid" :disabled="!valid">Login</v-btn>
                                 </v-card-actions>
                             </v-card>
                         </v-col>
@@ -56,29 +63,40 @@
 </template>
 
 <script>
+    import axios from 'axios';
+
+    const serverUrl = 'https://ph-library-api-project.azurewebsites.net';
+
+
     export default {
         name: "Login",
         methods:
             {
-                login()
+                async LogInto()
                 {
-                    console.log("Logged")
-                    localStorage.setItem('user-token', "HasloToOkon;)")
+                    await axios.post(serverUrl+'/login', {
+                        login: this.login,
+                        password: this.password
+                    }).then(
+                        response => {
+                            this.$cookies.set("token", response.headers.authorization, '10min','','',false, 'Strict');
+                            this.$cookies.set("role", response.headers.roles, '10min','','',false, 'Strict');
+                            this.$router.push('books')
+                        }).catch((error)=>(this.error = error));
                 }
             },
         data(){
             return{
-                token: null,
+                valid: false,
+                login: '',
+                password: '',
+                rules: [
+                    value => value.length>0 || 'Required.',
+                ],
+                error:null,
+
             };
         },
-        mounted: function () {
-            this.token = localStorage.getItem('user-token')
-            if(this.token)
-            {
-                this.$router.push('BooksList')
-            }
-
-        }
     }
 
 </script>

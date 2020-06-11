@@ -1,7 +1,8 @@
 <template>
     <div class="resourcesWrapper">
-        <navigation/>
+        <navigation :role="role"/>
         <background/>
+        <error :error="error"></error>
         <div class="resourcesHolder" v-if="books.length">
             <!--  options bar-->
             <v-container fluid justify="space-between">
@@ -93,13 +94,13 @@
                                     <v-row  class="px-4">
                                         <span>By:</span>
                                         <span class="ml-2" v-for="author in showBookAuthors(book)" :key="author.id">
-                                            {{author.name}} {{author.surname }}
+                                            {{author.name}}
                                         </span>
                                     </v-row>
                                 </v-list-item-subtitle>
                             </v-list-item-content>
                             <v-list-item-action>
-                                <v-btn outlined rounded :disabled="bookIsBorrowed(book)"><v-icon>mdi-book-plus</v-icon>Borrow</v-btn>
+                                <v-btn outlined rounded @click="borrow(book)" :disabled="bookIsBorrowed(book)"><v-icon>mdi-book-plus</v-icon>Borrow</v-btn>
                                 <v-btn icon @click.stop="showConfirm(book)" ><v-icon>mdi-close</v-icon></v-btn>
                             </v-list-item-action>
                         </v-list-item>
@@ -148,9 +149,10 @@
 <script>
     import Background from "@/components/Background";
     import Navigation from "@/components/Navigation";
+    import Error from "@/components/Error"
     import axios from "axios";
     import orderBy from 'lodash/orderBy';
-    const serverUrl = 'https://biblioteka-api-ph-library-api.azuremicroservices.io';
+    const serverUrl = 'https://ph-library-api-project.azurewebsites.net';
 
 
     export default {
@@ -159,6 +161,7 @@
             {
                 Navigation,
                 Background,
+                Error,
             },
         data() {
             return {
@@ -176,6 +179,8 @@
                 bookAuthors: [],
                 deleteDialog: false,
                 bookToDelete: null,
+                error: null,
+                role:'',
             }
         },
         methods:
@@ -209,7 +214,7 @@
                 },
                 bookIsBorrowed(book)
                 {
-                    if(book.isBorrowed != null)
+                    if(book.borrowedBy != null)
                     {
                         return true;
                     }
@@ -234,14 +239,24 @@
                     this.deleteDialog=true;
                     this.bookToDelete=book;
                 },
+                async borrow(book)
+                {
+                    await axios.post( serverUrl+'/borrowBook?bookId', {
+                    bookId: book.id,
+                    },
+                        {
+                            'headers': { 'Authorization': this.$cookies.get('token')}
+                        }).then((response)=>console.log(response)).catch((error)=>console.log(error))
 
+                }
             },
         mounted()
         {
+            this.role = this.$cookies.get('roles')
             // load all books from server
-            axios.get(serverUrl+'/books').then(books => this.books=books.data);
-            axios.get(serverUrl+'/authors').then(authors => this.authors=authors.data);
-            axios.get(serverUrl+'/authorBooks').then(authorBooks => this.authorBooks=authorBooks.data)
+            axios.get(serverUrl+'/books',{ 'headers': { 'Authorization': this.$cookies.get('token')}}).then(books => this.books=books.data).catch((error)=>this.error=error);
+            axios.get(serverUrl+'/authors',{ 'headers': { 'Authorization': this.$cookies.get('token')}}).then(authors => this.authors=authors.data).catch((error)=>this.error=error);
+            axios.get(serverUrl+'/authorBook',{ 'headers': { 'Authorization': this.$cookies.get('token')}}).then(authorBooks => this.authorBooks=authorBooks.data).catch((error)=>this.error=error);
         },
         computed: {
             Books(){
@@ -264,9 +279,7 @@
                         catch(TypeError){
                             return true
                         }
-
                     }
-
                 });
                 //Sort
                 if(this.sort[0])
@@ -286,7 +299,6 @@
                     return orderBy(books, 'publicationYear', 'desc');
                 }
                 return books;
-
             },
         },
     }

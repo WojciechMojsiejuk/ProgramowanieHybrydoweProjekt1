@@ -4,6 +4,7 @@ import router from "./router";
 import vuetify from './plugins/vuetify';
 import moment from 'moment'
 import Navigation from "@/components/Navigation";
+import VueCookies from 'vue-cookies'
 
 Vue.filter('formatDate', function(value) {
   if (value) {
@@ -11,11 +12,9 @@ Vue.filter('formatDate', function(value) {
   }
 });
 Vue.config.productionTip = false;
-Vue.prototype.$user = {
-  name: 'Jan Kowalski',
-  isAdmin: true,
-}
 Vue.component('menuNavigation', Navigation);
+Vue.use(VueCookies)
+Vue.$cookies.config('5min')
 
 new Vue({
   router,
