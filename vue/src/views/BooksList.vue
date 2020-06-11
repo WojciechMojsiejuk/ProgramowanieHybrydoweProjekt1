@@ -177,11 +177,7 @@
                 this.bookToReturn=book;
             },
             async returnBook(book) {
-                console.log(book.id)
-                var params = {
-                    bookId: book.id,
-                }
-                await axios.post(serverUrl+'/returnBook',params,{ 'headers': { 'Authorization': this.$cookies.get('token')}}).then(response => console.log(response)).catch((error)=>console.log(error));
+                await axios.post(serverUrl+'/returnBook?bookId='+book.id, {},{ 'headers': { 'Authorization': this.$cookies.get('token')}}).then(response => {if(response.status==200){this.returnDialog=false; this.$delete(this.booksList,book.id)}}).catch((error)=>console.log(error));
             },
             clearSearch(){
                 this.search='';

@@ -212,17 +212,6 @@
                 {
                     this.sort = [false, false, false, false];
                 },
-                bookIsBorrowed(book)
-                {
-                    if(book.borrowedBy != null)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false
-                    }
-                },
                 showBookAuthors(book){
                     let _ = this.authorBooks.filter((item) => {return item.bookId == book.id});
                     let _bookAuthors = [];
@@ -241,14 +230,23 @@
                 },
                 async borrow(book)
                 {
-                    await axios.post( serverUrl+'/borrowBook?bookId', {
-                    bookId: book.id,
-                    },
+                    await axios.post( serverUrl+'/borrowBook?bookId='+book.id, {},
                         {
                             'headers': { 'Authorization': this.$cookies.get('token')}
-                        }).then((response)=>console.log(response)).catch((error)=>console.log(error))
+                        }).then((response)=>{if(response.status==200){book.borrowedBy=true}}).catch((error)=>console.log(error))
 
-                }
+                },
+                bookIsBorrowed: function(book)
+                {
+                    if(book.borrowedBy != null)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false
+                    }
+                },
             },
         mounted()
         {

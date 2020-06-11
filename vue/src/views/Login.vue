@@ -79,8 +79,8 @@
                         password: this.password
                     }).then(
                         response => {
-                            this.$cookies.set("token", response.headers.authorization, '10min','','',false, 'Strict');
-                            this.$cookies.set("role", response.headers.roles, '10min','','',false, 'Strict');
+                            this.$cookies.set("token", response.headers.authorization, '30min','','',false, 'Strict');
+                            this.$cookies.set("role", response.headers.roles, '30min','','',false, 'Strict');
                             this.$router.push('books')
                         }).catch((error)=>(this.error = error));
                 }
