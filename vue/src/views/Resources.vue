@@ -233,7 +233,7 @@
                     await axios.patch( serverUrl+'/borrowBook?bookId='+book.id, {},
                         {
                             'headers': { 'Authorization': this.$cookies.get('token')}
-                        }).then((response)=>{if(response.status==200){book.borrowedBy=true}}).catch((error)=>console.log(error))
+                        }).then((response)=>{if(response.status==200){book.borrowedBy=true}}).catch((error)=>this.error = error)
 
                 },
                 bookIsBorrowed: function(book)
@@ -247,6 +247,14 @@
                         return false
                     }
                 },
+                async remove(book)
+                {
+                    await axios.delete( serverUrl+'/admin/deleteBook?id='+book.id,
+                        {
+                            'headers': { 'Authorization': this.$cookies.get('token')}
+                        }).then((response)=>{if(response.status==200){this.deleteDialog=false,this.$delete(this.books,book.id)}}).catch((error)=>this.error = error)
+
+                }
             },
         mounted()
         {

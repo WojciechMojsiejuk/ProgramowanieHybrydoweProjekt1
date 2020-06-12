@@ -158,18 +158,22 @@
                 console.log(this.newAuthors)
                 for(let author of this.newAuthors)
                 {
-                    console.log(author)
-                    authors.push({name: author})
+                    if(author.name != null)
+                    {
+                        authors.push({name: author.name})
+                    }
+                    else
+                    {
+                        authors.push({name: author})
+                    }
                 }
-                console.log(authors)
-                console.log('/admin/createBookWithAuthors?name='+this.bookTitle+"&description="+this.description+"&publicationYear="+publicationYear)
                 //Add book to db
                 try {
                     await axios.post(serverUrl + '/admin/createBookWithAuthors?name='+this.bookTitle+"&description="+this.description+"&publicationYear="+publicationYear,
                         authors,
                         { 'headers': { 'Authorization': this.$cookies.get('token')}}
                     );
-                    await this.$router.push('books')
+                    await this.$router.push('/books')
                 } catch (e) {
                     console.log(e)
                     this.bookError = true;

@@ -11,7 +11,7 @@
                         <v-col xs="2" sm="2" md="2" lg="2">
                             <v-btn outlined rounded to="/bookslist" color="white" class="mx-2"><v-icon>mdi-book-open-page-variant</v-icon>Borrowed</v-btn>
                         </v-col>
-                        <v-col xs="2" sm="2" md="2" lg="2" v-if="role==='RULE_ADMIN'">
+                        <v-col xs="2" sm="2" md="2" lg="2" v-if="role==='ROLE_ADMIN'">
                             <v-btn outlined rounded to="/books/add" color="white" class="mx-2"><v-icon>mdi-plus</v-icon>Add a new book</v-btn>
                         </v-col>
                         <v-col xs="2" sm="2" md="2" lg="2">
@@ -20,7 +20,7 @@
                         <v-col xs="2" sm="2" md="2" lg="2">
                             <v-btn outlined rounded to="/authors" color="white" class="mx-2"><v-icon>mdi-account-edit</v-icon>Authors</v-btn>
                         </v-col>
-                        <v-col xs="2" sm="2" md="2" lg="2" v-if="role='RULE_ADMIN'">
+                        <v-col xs="2" sm="2" md="2" lg="2" v-if="role='ROLE_ADMIN'">
                             <v-btn outlined rounded to="/users" color="white" class="mx-2"><v-icon>mdi-account-box-outline</v-icon>Users</v-btn>
                         </v-col>
                         <v-col xs="2" sm="2" md="2" lg="2" >
