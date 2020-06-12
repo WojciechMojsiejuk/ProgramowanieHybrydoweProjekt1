@@ -154,13 +154,19 @@
             async addToDb() {
                 //convert date to year only
                 let publicationYear = parseInt(this.published.slice(0,4))
+                let authors = []
+                console.log(this.newAuthors)
+                for(let author of this.newAuthors)
+                {
+                    console.log(author)
+                    authors.push({name: author})
+                }
+                console.log(authors)
+                console.log('/admin/createBookWithAuthors?name='+this.bookTitle+"&description="+this.description+"&publicationYear="+publicationYear)
                 //Add book to db
                 try {
-                    await axios.post(serverUrl + '/admin/createBookWithAuthors', {
-                        name: this.bookTitle,
-                        description: this.description,
-                        publicationYear: publicationYear,
-                        authors: this.newAuthors,
+                    await axios.post(serverUrl + '/admin/createBookWithAuthors?name='+this.bookTitle+"&description="+this.description+"&publicationYear="+publicationYear, {
+                        authors: authors,
                     },
                         { 'headers': { 'Authorization': this.$cookies.get('token')}}
                     );

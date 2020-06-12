@@ -230,7 +230,7 @@
                 },
                 async borrow(book)
                 {
-                    await axios.post( serverUrl+'/borrowBook?bookId='+book.id, {},
+                    await axios.patch( serverUrl+'/borrowBook?bookId='+book.id, {},
                         {
                             'headers': { 'Authorization': this.$cookies.get('token')}
                         }).then((response)=>{if(response.status==200){book.borrowedBy=true}}).catch((error)=>console.log(error))

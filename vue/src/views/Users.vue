@@ -186,9 +186,12 @@
                         })[0];
                 return _userRole;
             },
-            remove(user)
+            async remove(user)
             {
-                console.log("delete" + user)
+                await axios.delete( serverUrl+'/admin/deleteUser?id='+user.id,
+                    {
+                        'headers': { 'Authorization': this.$cookies.get('token')}
+                    }).then((response)=>{if(response.status==200){this.deleteDialog=false}}).catch((error)=>console.log(error))
             }
 
         },

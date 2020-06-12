@@ -76,7 +76,7 @@
                             rounded
                             @click="addToDb()"
                             color="brown lighten-1"
-                            disabled="!valid"
+                            :disabled="!valid"
                     ><v-icon>mdi-plus</v-icon>
                         Add user
                     </v-btn>
@@ -88,8 +88,8 @@
 
 <script>
     // <v-btn rounded @click="$emit('closeModal')"><v-icon >mdi-close</v-icon>Close</v-btn>
-    // import axios from 'axios';
-    // const serverUrl = 'https://ph-library-api-project.azurewebsites.net';
+    import axios from 'axios';
+    const serverUrl = 'https://ph-library-api-project.azurewebsites.net';
 
     export default {
         name: "Modal",
@@ -108,23 +108,14 @@
         methods:{
             async addToDb() {
                 //Add user to db
-                console.log('add to db')
-                // try{
-                //     await axios.post(serverUrl+'/songs', {
-                //         id: this.videoId,
-                //         songTitle: this.bookTitle,
-                //         publishedDate: this.published,
-                //         joiningDate: new Date(),
-                //         thumbnails: this.thumbnails,
-                //         lyrics: "",
-                //     });
-                // }
-                // catch(e){
-                //     // eslint-disable-next-line no-console
-                //     console.log('Song error', e);
-                //     this.bookError=true;
-                //     return;
-                // }
+                await axios.post( serverUrl+'/admin/sign-up',{
+                    login: this.newUserLogin,
+                    password: this.newUserPassword,
+                    },
+                    {
+                        'headers': { 'Authorization': this.$cookies.get('token')}
+                    }).then((response)=>{if(response.status==200){this.$emit('closeModal')}}).catch((error)=>console.log(error))
+
             },
         },
         computed: {

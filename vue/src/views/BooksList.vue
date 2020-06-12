@@ -11,25 +11,10 @@
                             flat
                             >
                     <v-toolbar-title>
-                        Playlist
+                        Borrowed Books List
                     </v-toolbar-title>
                      <v-container align="center">
                          <v-row align="center">
-                             <v-layout class="d-inline-flex" >
-                                 <v-flex  class="d-inline-flex">
-                                     <v-layout column align-center>
-                                         <v-switch v-model="threeLine" class="ma-0" label="More info" align="center"></v-switch>
-
-                                     </v-layout>
-                                 </v-flex>
-                             </v-layout>
-                             <v-layout  class="d-inline-flex">
-                                 <v-flex xs12 md6 lg3>
-                                     <v-layout column align-center>
-                                         <v-switch v-model="avatar" class="ma-0" label="Cover" align="center"></v-switch>
-                                     </v-layout>
-                                 </v-flex>
-                             </v-layout>
                              <v-layout>
                              <v-menu
                                      v-model="sortShow"
@@ -51,18 +36,6 @@
                                  </v-row>
                                  <v-row class="ma-1">
                                      <v-btn rounded outlined @click="sortNameDsc"><v-icon>mdi-sort-alphabetical-descending</v-icon>by name descending</v-btn>
-                                 </v-row>
-                                 <v-row class="ma-1">
-                                     <v-btn rounded outlined @click="sortPubDateAsc"><v-icon>mdi-sort-ascending</v-icon> by date of joining ascending </v-btn>
-                                 </v-row>
-                                 <v-row class="ma-1">
-                                     <v-btn rounded outlined @click="sortPubDateDsc"><v-icon>mdi-sort-descending</v-icon> by date of joining descending </v-btn>
-                                 </v-row>
-                                 <v-row class="ma-1">
-                                     <v-btn rounded outlined @click="sortJDateAsc"><v-icon>mdi-sort-ascending</v-icon> by date of publishing ascending </v-btn>
-                                 </v-row>
-                                 <v-row class="ma-1">
-                                     <v-btn rounded outlined @click="sortJDateDsc"><v-icon>mdi-sort-descending</v-icon> by date of publishing descending </v-btn>
                                  </v-row>
                                  <v-row class="ma-1">
                                      <v-btn rounded outlined @click="noSort"><v-icon>mdi-sort-variant-remove</v-icon>Clear</v-btn>
@@ -177,7 +150,7 @@
                 this.bookToReturn=book;
             },
             async returnBook(book) {
-                await axios.post(serverUrl+'/returnBook?bookId='+book.id, {},{ 'headers': { 'Authorization': this.$cookies.get('token')}}).then(response => {if(response.status==200){this.returnDialog=false; this.$delete(this.booksList,book.id)}}).catch((error)=>console.log(error));
+                await axios.patch(serverUrl+'/returnBook?bookId='+book.id, {},{ 'headers': { 'Authorization': this.$cookies.get('token')}}).then(response => {if(response.status==200){this.returnDialog=false; this.$delete(this.booksList,book.id)}}).catch((error)=>console.log(error));
             },
             clearSearch(){
                 this.search='';
