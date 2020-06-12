@@ -165,9 +165,8 @@
                 console.log('/admin/createBookWithAuthors?name='+this.bookTitle+"&description="+this.description+"&publicationYear="+publicationYear)
                 //Add book to db
                 try {
-                    await axios.post(serverUrl + '/admin/createBookWithAuthors?name='+this.bookTitle+"&description="+this.description+"&publicationYear="+publicationYear, {
-                        authors: authors,
-                    },
+                    await axios.post(serverUrl + '/admin/createBookWithAuthors?name='+this.bookTitle+"&description="+this.description+"&publicationYear="+publicationYear,
+                        authors,
                         { 'headers': { 'Authorization': this.$cookies.get('token')}}
                     );
                     await this.$router.push('books')
